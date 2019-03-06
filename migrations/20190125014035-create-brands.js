@@ -16,6 +16,10 @@ module.exports = {
         allowNull :true,
         type: Sequelize.STRING
       },
+      imgPth: {
+        allowNull :true,
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
