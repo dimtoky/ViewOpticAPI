@@ -100,18 +100,12 @@ module.exports = {
         });
     },
 
+
     //RETURN  PRODUCTS BY FORME
     getproductByForme: function (req, res) {
 
-
         models.Products.findAll({
-            where: { forme: req.params.forme },
-            include: [
-                {
-                    model: models.Brands
-                }
-            ]
-        }).then(products => {
+            where: { forme: req.params.form }}).then(products => {
 
             return res.status(200).json({
                 'products': products
@@ -120,6 +114,50 @@ module.exports = {
             return res.status(500).json({ 'error': 'unable to get products' });
         });
     },
+
+    //RETURN  PRODUCTS BY GENDER
+    getproductByGender: function (req, res) {
+
+        models.Products.findAll({
+            where: { gender: req.params.gender }}).then(products => {
+
+            return res.status(200).json({
+                'Gender' : req.params.gender,
+                'products': products
+            });
+        }).catch(function (err) {
+            return res.status(500).json({ 'error': 'unable to get products' });
+        });
+    },
+
+//RETURN  PRODUCTS BY COLOR
+/*getproductByBrand: function (req, res) {
+
+    models.Products.findAll({
+        where: { forme: req.params.form }}).then(products => {
+
+        return res.status(200).json({
+            'products': products
+        });
+    }).catch(function (err) {
+        return res.status(500).json({ 'error': 'unable to get products' });
+    });
+},
+
+
+    //RETURN  PRODUCTS BY FORME
+    getproductByBrand: function (req, res) {
+
+        models.Products.findAll({
+            where: { forme: req.params.form }}).then(products => {
+
+            return res.status(200).json({
+                'products': products
+            });
+        }).catch(function (err) {
+            return res.status(500).json({ 'error': 'unable to get products' });
+        });
+    },*/
 
 
     //CREATE NEW PRODUCT

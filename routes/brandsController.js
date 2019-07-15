@@ -10,7 +10,13 @@ module.exports = {
 
 //RETURN ALL PRODUCTS
     getBrands: function (req, res) {
-        models.Brands.findAll().then(brands => {
+        models.Brands.findAll({
+            include: [
+                {
+                    model: models.Products
+                }
+            ]
+        }).then(brands => {
 
             return res.status(200).json({
                 'brands': brands
@@ -27,7 +33,13 @@ module.exports = {
             return res.status(400).json({ 'error': 'invalid id' });
         }
 
-        models.Brands.findById(req.params.id).then(brand => {
+        models.Brands.findById(req.params.id,{
+            include: [
+                {
+                    model: models.Products
+                }
+            ]
+        }).then(brand => {
 
             if (brand) {
                 return res.status(200).json({

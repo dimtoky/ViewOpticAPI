@@ -23,6 +23,11 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'idBrand',
        targetKey: 'id'
     });
+
+    Products.hasOne(models.orders, {
+      foreignKey: 'idProduct', 
+      sourceKey: 'id'
+    });
   };
   return Products;
 };
