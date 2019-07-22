@@ -1,10 +1,11 @@
 //Imports
 var models = require('../models');
 var bodyParser = require('body-parser');
-
+path = require('path');
 
 const NUMBER_REGEX = /^(0|(\+)?[1-9]{1}[0-9]{0,8}|(\+)?[1-3]{1}[0-9]{1,9}|(\+)?[4]{1}([0-1]{1}[0-9]{8}|[2]{1}([0-8]{1}[0-9]{7}|[9]{1}([0-3]{1}[0-9]{6}|[4]{1}([0-8]{1}[0-9]{5}|[9]{1}([0-5]{1}[0-9]{4}|[6]{1}([0-6]{1}[0-9]{3}|[7]{1}([0-1]{1}[0-9]{2}|[2]{1}([0-8]{1}[0-9]{1}|[9]{1}[0-5]{1})))))))))$/;
-const IMAGE_PATH = 'C:/Users/Dimtoky/Desktop/TestServ/images/products/';
+const IMAGE_PATH = path.join(__dirname, '../images/products/');
+const ORDER_VALUE = 8;
 //Routes
 module.exports = {
 
@@ -25,7 +26,7 @@ module.exports = {
             return res.status(500).json({ 'error': 'unable to get Oders' });
         });
     },
-    
+
 
 //RETURN ONE PRODUCTS BY ID
     getOrder: function (req, res) {
@@ -62,14 +63,16 @@ module.exports = {
         var adresse = req.body.adresse;
         var  tel = req.body. tel;
         var isDone = req.body.isDone;
-        
-        
+
+        var userId = req.body.userId;
+
         models.orders.findOne({
-            where: { idProduct: idProduct },
+            where: { idProduct: idProduct, mail: mail},
             attributes: ['idProduct']
         }).then(order => {
-            if (!order) {
 
+
+            if (!order) {
 
                 var newOrder = models.orders.create({
                     idProduct: idProduct,
@@ -81,18 +84,16 @@ module.exports = {
                     isDone: isDone
                     //imgPath: imageFile.name
                 }).then(function (newOrder) {
+                 return addProductOrderActivity(idProduct, userId, newOrder, res)
 
                    /* imageFile.mv(IMAGE_PATH + imageFile.name, function (err) {
                         if (err) {
                             return res.status(500).send(err);
                         }*/
 
-                        return res.status(201).json({
-                            'OrderId': newOrder.id,
-                            'OrderName': newOrder.nom
-                        });
                    // })
                 }).catch(function (err) {
+                  console.log(err);
                     return res.status(409).json({ 'error': 'cannot add Order' });
                 });
 
@@ -164,4 +165,56 @@ module.exports = {
         });
     }
 
+}
+
+
+
+
+async function addProductOrderActivity(idProduct, userId, newOrder, res) {
+  console.log('adding activity');
+  console.log('looooooooooooook');
+  console.log(userId);
+  console.log(userId['chin size']);
+      var newProduct = models.Activities.create({
+        idProduct: idProduct,
+        age: userId['age'],
+        beard: userId['beard'],
+        gender: userId['gender'],
+        mustache: userId['mustache'],
+        race: userId['race'],
+        chinsize: userId['chin size'],
+        eyebrowscorners: userId['eyebrows corners'],
+        eyebrowsposition: userId['eyebrows position'],
+        eyebrowssize: userId['eyebrows size'],
+        eyescorners: userId['eyes corners'],
+        eyesdistance: userId['eyes distance'],
+        eyesposition: userId['eyes position'],
+        eyesshape: userId['eyes shape'],
+        hairbeard: userId['hair beard'],
+        haircolortype: userId['hair color type'],
+        hairforehead: userId['hair forehead'],
+        hairlength: userId['hair length'],
+        hairmustache: userId['hair mustache'],
+        hairsides: userId['hair sides'],
+        hairtop: userId['hair top'],
+        headshape: userId['head shape'],
+        headwidth: userId['head width'],
+        mouthcorners: userId['mouth corners'],
+        mouthheight: userId['mouth height'],
+        mouthwidth: userId['mouth width'],
+        noseshape: userId['nose shape'],
+        nosewidth: userId['nose width'],
+        value: ORDER_VALUE
+      }).then(function (newProduct) {
+
+                                return res.status(201).json({
+                                    'OrderId': newOrder.id,
+                                    'OrderName': newOrder.nom
+                                });
+
+      }).catch(function (err) {
+        console.log('erroooooor');
+        console.log(err);
+          return res.status(409).json({ 'error': 'cannot add DisLike' });
+      });
 }

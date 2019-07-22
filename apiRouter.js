@@ -19,6 +19,17 @@ exports.router = (function() {
 
     apiRouter.route('/products/id/:id').get(productsController.getproduct);
 
+    apiRouter.route('/products/id/:id').post(productsController.postproduct);
+
+    apiRouter.route('/products/like').post(productsController.postlike);
+
+    apiRouter.route('/products/dislike').post(productsController.postdislike);
+
+    apiRouter.route('/products/recommend').post(productsController.recommendProducts);
+
+    apiRouter.route('/products/viewActivity').post(productsController.viewActivity);
+
+
     apiRouter.route('/products/brandid/:id').get(productsController.getproductByBrand);
 
     apiRouter.route('/products/forme/:form').get(productsController.getproductByForme);
@@ -38,18 +49,21 @@ exports.router = (function() {
 
     apiRouter.route('/products/img/add').post(productsController.postImg);
 
+
+    apiRouter.route('/products/userImage').post(productsController.postUserImage);
+
      //Brands routes
      apiRouter.route('/brands/').get(brandsController.getBrands);
 
      apiRouter.route('/brands/id/:id').get(brandsController.getBrand);
- 
+
      apiRouter.route('/brands/create/').post(brandsController.createBrand);
- 
+
      apiRouter.route('/brands/update/:id').post(brandsController.updateBrand);
- 
+
      apiRouter.route('/brands/delete/:id').post(brandsController.deleteBrand);
 
-     //Orders routes 
+     //Orders routes
      apiRouter.route('/orders/').get(orderControllers.getOrders);
 
      apiRouter.route('/orders/id/:id').get(orderControllers.getOrder);

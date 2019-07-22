@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 
 
 const NUMBER_REGEX = /^(0|(\+)?[1-9]{1}[0-9]{0,8}|(\+)?[1-3]{1}[0-9]{1,9}|(\+)?[4]{1}([0-1]{1}[0-9]{8}|[2]{1}([0-8]{1}[0-9]{7}|[9]{1}([0-3]{1}[0-9]{6}|[4]{1}([0-8]{1}[0-9]{5}|[9]{1}([0-5]{1}[0-9]{4}|[6]{1}([0-6]{1}[0-9]{3}|[7]{1}([0-1]{1}[0-9]{2}|[2]{1}([0-8]{1}[0-9]{1}|[9]{1}[0-5]{1})))))))))$/;
-const IMAGE_PATH = 'C:/Users/Dimtoky/Desktop/TestServ/images/products/';
+const IMAGE_PATH = 'D:/Viewoptic/API/ViewOpticAPI/images/products/';
 //Routes
 module.exports = {
 
@@ -25,7 +25,7 @@ module.exports = {
             return res.status(500).json({ 'error': 'unable to get Brands' });
         });
     },
-    
+
 
 //RETURN ONE PRODUCTS BY ID
     getBrand: function (req, res) {
