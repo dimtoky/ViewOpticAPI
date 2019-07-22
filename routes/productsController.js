@@ -14,8 +14,8 @@ path = require('path');
 
 const NUMBER_REGEX = /^(0|(\+)?[1-9]{1}[0-9]{0,8}|(\+)?[1-3]{1}[0-9]{1,9}|(\+)?[4]{1}([0-1]{1}[0-9]{8}|[2]{1}([0-8]{1}[0-9]{7}|[9]{1}([0-3]{1}[0-9]{6}|[4]{1}([0-8]{1}[0-9]{5}|[9]{1}([0-5]{1}[0-9]{4}|[6]{1}([0-6]{1}[0-9]{3}|[7]{1}([0-1]{1}[0-9]{2}|[2]{1}([0-8]{1}[0-9]{1}|[9]{1}[0-5]{1})))))))))$/;
 const IMAGE_PATH = path.join(__dirname, '../images/products/');
-const FACE_ATTR_PATH = path.join(__dirname, '../faceAttributes.json');
-const FACE_WEIGHT_PATH = path.join(__dirname, '../faceAttributesWeights.json');
+const FACE_ATTR_PATH = path.join(__dirname, '../faceSettings/faceAttributes.json');
+const FACE_WEIGHT_PATH = path.join(__dirname, '../faceSettings/faceAttributesWeights.json');
 const LIKE_VALUE = 4;
 const DISLIKE_VALUE = -4;
 const VIEW_VALUE = 1;
@@ -614,6 +614,7 @@ console.log('im ikkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkn');
   },
   postUserImage: function(req, res) {
 
+
     var face_attributes = ["age",
       "beard",
       "gender",
@@ -644,6 +645,10 @@ console.log('im ikkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkn');
     ];
 
     var bImage = req.body.base64;
+    var defaultuserId = req.body.userId;
+    if (defaultuserId.age == 0) {
+      defaultuserId.age = 3;
+    }
     var responseString = "";
     var bImage = bImage.replace(/^data:image\/[a-z]+;base64,/, "");
 
@@ -674,10 +679,12 @@ console.log('im ikkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkn');
       });
       resp.on("end", function() {
         var body = JSON.parse(responseString);
+        var userId = defaultuserId;
 
+        if(body.media) {
         var tags = body.media.faces[0].tags;
 
-        var userId = {};
+         userId = {};
 
         //console.log(tags);
         for (var i = 0; i < tags.length; i++) {
@@ -704,15 +711,21 @@ console.log('im ikkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkn');
             userId[name] = json_face_attributes[name].indexOf(value);
           }
         }
+      }
 
 
         return res.status(200).json({
           'userId': userId
         });
         // print to console when response ends
-      });
+      })
     });
+    requ.on("error", function(err) {
+      return        res.status(200).json({
+                  'error': 'cannot read Image'
+                });
 
+    });
     requ.write(data);
     requ.end();
 
