@@ -1,20 +1,25 @@
 //Imports
 var models = require('../models');
 var bodyParser = require('body-parser');
+var jwtUtils = require('../utils/jwt.utils');
+path = require('path')
 
 
 const NUMBER_REGEX = /^(0|(\+)?[1-9]{1}[0-9]{0,8}|(\+)?[1-3]{1}[0-9]{1,9}|(\+)?[4]{1}([0-1]{1}[0-9]{8}|[2]{1}([0-8]{1}[0-9]{7}|[9]{1}([0-3]{1}[0-9]{6}|[4]{1}([0-8]{1}[0-9]{5}|[9]{1}([0-5]{1}[0-9]{4}|[6]{1}([0-6]{1}[0-9]{3}|[7]{1}([0-1]{1}[0-9]{2}|[2]{1}([0-8]{1}[0-9]{1}|[9]{1}[0-5]{1})))))))))$/;
-const IMAGE_PATH = 'C:/Users/Dimtoky/Desktop/Stage VO/ViewOpticAPIServer/images/products/';
+const IMAGE_PATH = path.join(__dirname, '../images/products/');
 //Routes
 module.exports = {
 
     //RETURN ALL PRODUCTS
     getproducts: function (req, res) {
+      
         models.Products.findAll({
+             attributes: ['id', 'pname', 'price', 'quantity'],
             include: [
                 {
-                    model: models.Brands
-                }
+                    model: models.Brands,
+                    attributes: ['bname']      
+                }         
             ]
         }).then(products => {
 
@@ -22,8 +27,9 @@ module.exports = {
                 'products': products
             });
         }).catch(function (err) {
-            return res.status(500).json({ 'error': 'unable to get products' });
-        });
+            return res.send(err);
+            //return res.status(500).json({ 'error': 'unable to get products' });
+        }); 
     },
 
     //RETURN IMAGE
@@ -36,6 +42,9 @@ module.exports = {
     //ADD IMAGE
     postImg: function (req, res) {
 
+        token = req.header('token');
+        jwtUtils.verifyJWTToken(token)   .then((decodedToken) =>
+        {
         if (Object.keys(req.files).length == 0) {
             return res.status(400).send('No files were uploaded.');
         }
@@ -48,7 +57,12 @@ module.exports = {
                 return res.status(500).send(err);
             }
             return res.status(200).json({ 'success': 'image uploaded' });
-        });
+        });; })
+        .catch((err) =>
+        {
+          res.status(400)
+            .json({message: "Invalid auth token provided." + err})
+        })
 
     },
 
@@ -62,6 +76,9 @@ module.exports = {
             include: [
                 {
                     model: models.Brands
+                },
+                {
+                    model: models.Stores
                 }
             ]
         }).then(product => {
@@ -168,7 +185,7 @@ module.exports = {
         var price = req.body.price;
         var forme = req.body.forme;
         var description = req.body.description;
-        var isAvailable = req.body.isAvailable;
+        var quantity = req.body.quantity;
         var age = req.body.age;
         var size = req.body.size;
         var rimtype = req.body.rimtype;
@@ -178,7 +195,9 @@ module.exports = {
         var imgPath1 = req.body.imgPath1;
         var imgPath2 = req.body.imgPath2;
         var imgPath3 = req.body.imgPath3;
-
+        token = req.header('token');
+        jwtUtils.verifyJWTToken(token)   .then((decodedToken) =>
+        {
 
 
         models.Products.findOne({
@@ -194,7 +213,7 @@ module.exports = {
                     price: price,
                     forme: forme,
                     description: description,
-                    isAvailable: isAvailable,
+                    quantity: quantity,
                     age: age,
                     gender: gender,
                     size: size,
@@ -222,7 +241,12 @@ module.exports = {
 
         }).catch(function (err) {
             return res.status(500).json({ 'error': 'unable to verify product' + err });
-        });
+        });})
+        .catch((err) =>
+        {
+          res.status(400)
+            .json({message: "Invalid auth token provided."})
+        })
     },
 
     //UPDATE ONE PRODUCT BY ID
@@ -234,7 +258,7 @@ module.exports = {
         var price = req.body.price;
         var forme = req.body.forme;
         var description = req.body.description;
-        var isAvailable = req.body.isAvailable;
+        var quantity = req.body.quantity;
         var age = req.body.age;
         var size = req.body.size;
         var rimtype = req.body.rimtype;
@@ -244,6 +268,9 @@ module.exports = {
         var imgPath1 = req.body.imgPath1;
         var imgPath2 = req.body.imgPath2;
         var imgPath3 = req.body.imgPath3;
+        token = req.header('token');
+        jwtUtils.verifyJWTToken(token)   .then((decodedToken) =>
+        {
 
         if (!NUMBER_REGEX.test(req.params.id)) {
             return res.status(400).json({ 'error': 'invalid id' });
@@ -258,7 +285,7 @@ module.exports = {
                     price: price,
                     forme: forme,
                     description: description,
-                    isAvailable: isAvailable,
+                    quantity: quantity,
                     age: age,
                     gender: gender,
                     size: size,
@@ -283,14 +310,21 @@ module.exports = {
 
         }).catch(function (err) {
             return res.status(500).json({ 'error': 'unable to verify product' });
-        });
+        });})
+        .catch((err) =>
+        {
+          res.status(400)
+            .json({message: "Invalid auth token provided."})
+        })
     },
 
 
     //DELETE ONE PRODUCT BY ID
     deleteproduct: function (req, res) {
 
-
+        token = req.header('token');
+        jwtUtils.verifyJWTToken(token)   .then((decodedToken) =>
+        {
         if (!NUMBER_REGEX.test(req.body.id)) {
             return res.status(400).json({ 'error': 'invalid id' });
         }
@@ -310,7 +344,12 @@ module.exports = {
 
         }).catch(function (err) {
             return res.status(500).json({ 'error': 'unable to verify product' });
-        });
+        });})
+        .catch((err) =>
+        {
+          res.status(400)
+            .json({message: "Invalid auth token provided."})
+        })
     }
 
 }

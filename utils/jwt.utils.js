@@ -14,5 +14,22 @@ module.exports = {
         {
             expiresIn: '2h'
         })
-    }
+    },
+
+    verifyJWTToken: function(token) 
+{
+  return new Promise((resolve, reject) =>
+  {
+    jwt.verify(token, JWT_SIGN_SECRET, (err, decodedToken) => 
+    {
+      if (err || !decodedToken)
+      {
+        return reject(err)
+      }
+
+      resolve(decodedToken)
+    })
+  })
+}
+
 }

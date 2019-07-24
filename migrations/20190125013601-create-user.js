@@ -8,10 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      email: {
-        allowNull :false,
-        type: Sequelize.STRING
-      },
       username: {
         allowNull :false,
         type: Sequelize.STRING
@@ -20,7 +16,35 @@ module.exports = {
         allowNull :false,
         type: Sequelize.STRING
       },
+      idStore: {
+        allowNull :false,
+        type: Sequelize.INTEGER
+      },
       isAdmin: {
+        allowNull :false,
+        type: Sequelize.BOOLEAN
+      },
+      mngBrand: {
+        allowNull :false,
+        type: Sequelize.BOOLEAN
+      },
+      mngProduct: {
+        allowNull :false,
+        type: Sequelize.BOOLEAN
+      },
+      mngLens: {
+        allowNull :false,
+        type: Sequelize.BOOLEAN
+      },
+      mngConfV: {
+        allowNull :false,
+        type: Sequelize.BOOLEAN
+      },
+      mngConfL: {
+        allowNull :false,
+        type: Sequelize.BOOLEAN
+      },
+      mngReservations: {
         allowNull :false,
         type: Sequelize.BOOLEAN
       },

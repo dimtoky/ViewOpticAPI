@@ -5,92 +5,91 @@ var jwtUtils = require('../utils/jwt.utils');
 path = require('path')
 
 const NUMBER_REGEX = /^(0|(\+)?[1-9]{1}[0-9]{0,8}|(\+)?[1-3]{1}[0-9]{1,9}|(\+)?[4]{1}([0-1]{1}[0-9]{8}|[2]{1}([0-8]{1}[0-9]{7}|[9]{1}([0-3]{1}[0-9]{6}|[4]{1}([0-8]{1}[0-9]{5}|[9]{1}([0-5]{1}[0-9]{4}|[6]{1}([0-6]{1}[0-9]{3}|[7]{1}([0-1]{1}[0-9]{2}|[2]{1}([0-8]{1}[0-9]{1}|[9]{1}[0-5]{1})))))))))$/;
-const IMAGE_PATH = path.join(__dirname, '../images/brands/');
+const IMAGE_PATH = path.join(__dirname, '../images/lens/');
 //Routes
 module.exports = {
 
     
 
 //RETURN ALL PRODUCTS
-    getBrands: function (req, res) {
+    getLenses: function (req, res) {
         
-        models.Brands.findAll({
-            attributes: ['id', 'bname', 'createdAt']
-        }).then(brands => {
+        models.Lens.findAll({
+            attributes: ['id', 'lName', 'lBrand', 'lType', 'lPrice']
+        }).then(lenses => {
 
             return res.status(200).json({
-                'brands': brands
+                'lenses': lenses
             });
         }).catch(function (err) {
-            return res.status(500).json({ 'error': 'unable to get Brands' });
+            return res.status(500).json({ 'error': 'unable to get lenses' });
         });
     },
     
 
 //RETURN ONE PRODUCTS BY ID
-    getBrand: function (req, res) {
+    getLens: function (req, res) {
         if (!NUMBER_REGEX.test(req.params.id)) {
             return res.status(400).json({ 'error': 'invalid id' });
         }
 
-        models.Brands.findById(req.params.id,{
-            include: [
-                {
-                    model: models.Products
-                }
-            ]
-        }).then(brand => {
-
-            if (brand) {
+        models.Lens.findById(req.params.id,{}).then(lens => {
+            if (lens) {
                 return res.status(200).json({
-                    'brand': brand
+                    'lens': lens
                 });
             } else {
-                return res.status(404).json({ 'error': 'Brand not found' });
+                return res.status(404).json({ 'error': 'Lens not found' });
             }
         })
     },
 
 
 //CREATE NEW PRODUCT
-    createBrand: function (req, res) {
+    createLens: function (req, res) {
 
-        var bname = req.body.bname;
-        var bdescription = req.body.bdescription;
-        var imgPath = req.body.imgPath;
+        var lName = req.body.lName;
+        var lBrand = req.body.lBrand;
+        var lType = req.body.lType;
+        var lPrice = req.body.lPrice;
+        var lDescription = req.body.lDescription;
+        var lImgPath = req.body.imgPath;
+        var lquantity = req.body.lquantity;
 
         token = req.header('token');
         jwtUtils.verifyJWTToken(token)   .then((decodedToken) =>
         {
+        models.Lens.findOne({
+            where: { lName: lName },
+            attributes: ['lName']
+        }).then(lens => {
+            if (!lens) {
 
-        models.Brands.findOne({
-            where: { bname: bname },
-            attributes: ['bname']
-        }).then(brand => {
-            if (!brand) {
-
-
-                var newBrand = models.Brands.create({
-                    bname: bname,
-                    bdescription: bdescription,
-                    imgPth: imgPath
-                }).then(function (newBrand) {
+                var newLens = models.Lens.create({
+                    lName: lName,
+                    lBrand: lBrand,
+                    lType: lType,
+                    lPrice: lPrice,
+                    lDescription: lDescription,
+                    lImgPath: lImgPath,
+                    lquantity: lquantity
+                }).then(function (newLens) {
 
                         return res.status(201).json({
-                            'BrandId': newBrand.id,
-                            'BrandName': newBrand.bname
+                            'LensId': newLens.id,
+                            'LensName': newLens.lName
                         });
 
                 }).catch(function (err) {
-                    return res.status(409).json({ 'error': 'cannot add Brand' });
+                    return res.status(409).json({ 'error': 'cannot add lens' });
                 });
 
             } else {
-                return res.status(409).json({ 'error': 'Brand already exist' });
+                return res.status(409).json({ 'error': 'lens already exist' });
             }
 
         }).catch(function (err) {
-            return res.status(500).json({ 'error': 'unable to verify Brand' });
+            return res.status(500).json({ 'error': 'unable to verify lens' });
         });  })
         .catch((err) =>
         {
@@ -100,12 +99,16 @@ module.exports = {
     },
 
 //UPDATE ONE PRODUCT BY ID
-    updateBrand: function (req, res) {
+    updateLens: function (req, res) {
 
 
-        var bname = req.body.bname;
-        var bdescription = req.body.bdescription;
-        var imgPth = req.body.imgPath;
+        var lName = req.body.lName;
+        var lBrand = req.body.lBrand;
+        var lType = req.body.lType;
+        var lPrice = req.body.lPrice;
+        var lDescription = req.body.lDescription;
+        var lImgPath = req.body.imgPath;
+        var lquantity = req.body.lquantity;
 
         token = req.header('token');
         jwtUtils.verifyJWTToken(token)   .then((decodedToken) =>
@@ -114,29 +117,33 @@ module.exports = {
             return res.status(400).json({ 'error': 'invalid id' });
         }
 
-        models.Brands.findById(req.params.id).then(brand => {
-            if (brand) {
+        models.Lens.findById(req.params.id).then(lens => {
+            if (lens) {
 
-                brand.update({
-                    bname: bname,
-                    bdescription: bdescription,
-                    imgPth: imgPth
-                }).then(function (brand) {
+                lens.update({
+                    lName: lName,
+                    lBrand: lBrand,
+                    lType: lType,
+                    lPrice: lPrice,
+                    lDescription: lDescription,
+                    lImgPath: lImgPath,
+                    lquantity: lquantity
+                }).then(function (lens) {
                     return res.status(201).json({
-                        'brandId': brand.id,
-                        'brandName': brand.bname,
-                        'imgPath': brand.imgPth
+                        'LensId': lens.id,
+                        'LensName': lens.lName,
+                        'imgPath': lens.lImgPath
                     })
                 }).catch(function (err) {
-                    return res.status(409).json({ 'error': 'cannot updatebrand' });
+                    return res.status(409).json({ 'error': 'cannot update lens' + err});
                 });
 
             } else {
-                return res.status(404).json({ 'error': 'brand not found' });
+                return res.status(404).json({ 'error': 'lens not found' });
             }
 
         }).catch(function (err) {
-            return res.status(500).json({ 'error': 'unable to verify brand' });
+            return res.status(500).json({ 'error': 'unable to verify lens' + err });
         });  })
         .catch((err) =>
         {
@@ -147,7 +154,7 @@ module.exports = {
 
 
 //DELETE ONE PRODUCT BY ID
-    deleteBrand: function (req, res) {
+    deleteLens: function (req, res) {
 
         token = req.header('token');
         jwtUtils.verifyJWTToken(token)   .then((decodedToken) =>
@@ -156,21 +163,21 @@ module.exports = {
             return res.status(400).json({ 'error': 'invalid id' });
         }
 
-        models.Brands.findById(req.params.id).then(brand => {
-            if (brand) {
+        models.Lens.findById(req.params.id).then(lens => {
+            if (lens) {
 
-                brand.destroy().then(function (brand) {
-                    return res.status(201).json({ 'success': 'brand deleted' })
+                lens.destroy().then(function (lens) {
+                    return res.status(201).json({ 'success': 'lens deleted' })
                 }).catch(function (err) {
-                    return res.status(409).json({ 'error': 'cannot delete brand' });
+                    return res.status(409).json({ 'error': 'cannot delete lens' });
                 });
 
             } else {
-                return res.status(404).json({ 'error': 'brand not found' });
+                return res.status(404).json({ 'error': 'lens not found' });
             }
 
         }).catch(function (err) {
-            return res.status(500).json({ 'error': 'unable to verify brand' });
+            return res.status(500).json({ 'error': 'unable to verify lens' });
         });})
         .catch((err) =>
         {

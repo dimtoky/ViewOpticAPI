@@ -1,35 +1,32 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('orders', {
+    return queryInterface.createTable('Lens', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      idProduct: {
+      lName: {
+        type: Sequelize.STRING
+      },
+      lBrand: {
+        type: Sequelize.STRING
+      },
+      lType: {
+        type: Sequelize.STRING
+      },
+      lPrice: {
         type: Sequelize.INTEGER
       },
-      idStore: {
-        type: Sequelize.INTEGER
-      },
-      nom: {
+      lDescription: {
         type: Sequelize.STRING
       },
-      prenom: {
+      lImgPath: {
         type: Sequelize.STRING
       },
-      mail: {
-        type: Sequelize.STRING
-      },
-      adresse: {
-        type: Sequelize.STRING
-      },
-      tel: {
-        type: Sequelize.STRING
-      },
-      state: {
+      lquantity: {
         type: Sequelize.INTEGER
       },
       createdAt: {
@@ -43,6 +40,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('orders');
+    return queryInterface.dropTable('Lens');
   }
 };

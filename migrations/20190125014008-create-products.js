@@ -12,6 +12,10 @@ module.exports = {
         allowNull :true,
         type: Sequelize.INTEGER
       },
+      idUser: {
+        allowNull :true,
+        type: Sequelize.INTEGER
+      },
       pname: {
         allowNull :false,
         type: Sequelize.STRING
@@ -52,9 +56,9 @@ module.exports = {
         allowNull :true,
         type: Sequelize.STRING
       },
-      isAvailable: {
+      quantity: {
         allowNull :false,
-        type: Sequelize.BOOLEAN
+        type: Sequelize.INTEGER
       },
       imgPath1: {
         allowNull :true,

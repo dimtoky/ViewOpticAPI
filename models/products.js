@@ -2,6 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   const Products = sequelize.define('Products', {
     idBrand: DataTypes.INTEGER,
+    idUser: DataTypes.INTEGER,
     pname: DataTypes.STRING,
     price: DataTypes.INTEGER,
     forme: DataTypes.STRING,
@@ -12,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     rimtype: DataTypes.STRING,
     material: DataTypes.STRING,
     description: DataTypes.STRING,
-    isAvailable: DataTypes.BOOLEAN,
+    quantity: DataTypes.INTEGER,
     imgPath1: DataTypes.STRING,
     imgPath2: DataTypes.STRING,
     imgPath3: DataTypes.STRING
@@ -24,10 +25,17 @@ module.exports = (sequelize, DataTypes) => {
        targetKey: 'id'
     });
 
-    Products.hasOne(models.orders, {
+    Products.belongsTo(models.User, {
+      foreignKey: 'idUser',
+       targetKey: 'id'
+    });
+
+    Products.hasMany(models.orders, {
       foreignKey: 'idProduct', 
       sourceKey: 'id'
     });
+
+    Products.belongsToMany(models.Stores, {through: 'Productstore', foreignKey: 'idProduct'})
   };
   return Products;
 };
